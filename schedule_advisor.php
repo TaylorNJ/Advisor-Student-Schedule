@@ -46,32 +46,45 @@
     <button class="week_button" onclick="openFormWeek()">Select Week & Times</button>
     <!-- <button class="avail_button" onclick="openFormAvail()">Select Unavailable Times</button> -->
 
-
-
     <?php
     $aid= $_REQUEST['userId'];
-    // echo $aid;
 
-    //slot function grabbed from the internets
-    function createTimeSlots($start_time, $end_time, $interval){
-        $start = new DateTime($start_time);
-        $end = new DateTime($end_time);
+
+    function createTimeSlots($start_date, $end_date, $time_s, $time_e, $interval){
+        $date = [];
+        $startD = strtotime($start_date);
+        $endD = strtotime($end_date);
+
+        $start = new dateTime($time_s);
+        $end = new dateTime($time_e);
+
         $startTime = $start->format('H:i');
         $endTime = $end->format('H:i');
+
         $i=0;
-        $time = [];
-        while(strtotime($startTime) <= strtotime($endTime)){
-            $start = $startTime;
-            $end = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
-            $startTime = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
-            $i++;
-            if(strtotime($startTime) <= strtotime($endTime)){
-                $time[$i]['slot_start_time'] = $start;
-                $time[$i]['slot_end_time'] = $end;
+        $time=[];
+        for ($currentDate=$startD; $currentDate<=$endD; $currentDate+=(86400)) {            
+            $Store = date('D m/d', $currentDate);
+            $date[] = $Store;
+            while(strtotime($startTime) <= strtotime($endTime)){
+                $start = $startTime;
+                $end = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
+                $startTime = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
+                $i++;
+                if(strtotime($startTime) <= strtotime($endTime)){
+                    $time[$i]['start'] = $start;
+                    $time[$i]['end'] = $end;
+                } 
             }
+        }
+        $week= array();
+        foreach($date as $day=>$value){
+            $week[$value] = $time;
+            echo"<br>";
+        }
+        return $week;
     }
-    return $time;
-    }
+    
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
@@ -119,16 +132,28 @@
             echo "Error: " . $sql . "<br>" . mysqli_error($conn);
         }
 
-        $slots
+        //create slots
+        $slots = createTimeSlots($weekStart, $weekEnd, $timeStart, $timeEnd, 30);
+        
+        //add slot values to db
+        foreach($slots as $day=>$value){
+            foreach($value as $select=>$time){
+                $query= "INSERT INTO time_slots VALUES ($last_id, '$time[start]', '$time[end]', $aid, NULL, '$day');";
+            }
+        }
+
+    
         $query= "SELECT * FROM schedule WHERE schedule_id=$last_id;";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0){
-            print_r($result);
+            // print_r($result);
 
             while($row = mysqli_fetch_assoc($result)) {
-                print_r($row);
+                // print_r($row);
             }
         }
+
+
 
         //   echo $result;
 
