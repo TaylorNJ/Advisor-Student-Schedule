@@ -7,6 +7,10 @@
     <title>Document</title>
 </head>
 <style>
+    .header{
+       margin: auto;
+       width: 50%;
+    }
 
     table, th, td {
         border:1px solid black;
@@ -66,6 +70,12 @@
 </style>
 
 <body>
+    <div clas="header">
+        <h1>Center for Academic Advising</h1>
+        <p>Welcome to the Center for Academic Advising. Every student has an assigned advisor to help you plan your journey with us.
+            Set up an appointment with your advisor after loging in.
+        </p>
+    </div>
     <?php
     $aid= $_REQUEST['userId'];
     $conn = mysqli_connect("localhost", "natalia", "root", "advisor_student") or die("Connection failed: " . mysqli_connect_error());
@@ -152,7 +162,7 @@
         $timeEnd = $_POST['time_end'];
         echo"<center> <h3>This is a preview of your schedule for $weekStart - $weekEnd</h3></center>";
         echo"<center><a href=view_schedule.php?userId=$aid>Click Here to View Your Schedules</a>";
-        echo"<center><a href=advisor_login.php?userId=$aid>Return to Homepage</a>";
+        echo"<center><a href=index.php?userId=$aid>Return to Homepage</a>";
 
         $query= "INSERT INTO schedule VALUES (NULL, $aid, '$weekStart', '$weekEnd', '$timeStart', '$timeEnd');";
         // echo $query;
