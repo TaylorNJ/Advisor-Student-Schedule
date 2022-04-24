@@ -20,7 +20,7 @@
            while($row = mysqli_fetch_assoc($result)) {
                echo "<center><h1>Welcome ", $row['first_name']," ", $row['last_name'],"</h1>";
                echo"<br><a href='schedule_advisor.php?userId=$advisorId'>Create Schedule</a>";
-               echo"<br><a href='schedule_advisor.php?userId=$advisorId'>View Schedule</a>";
+               echo"<br><a href='view_schedule.php?userId=$advisorId'>View Schedule</a>";
                echo"<br><br>Upcoming Appointments: ";
                echo"</center>" ;
            }
