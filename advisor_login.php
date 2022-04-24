@@ -21,10 +21,11 @@
            setcookie("userId", $advisorId);
            while($row = mysqli_fetch_assoc($result)) {
                echo "Welcome ", $row['first_name'];
-               echo"<br><a href='schedule_advisor.php?userId=$advisorId'>View/Edit Current Schedule</a>";
+               echo"<br><a href='schedule_advisor.php?userId=$advisorId'>Create Schedule</a>";
+               echo"<br><a href='schedule_advisor.php?userId=$advisorId'>View Schedule</a>";
                echo"<br>Upcoming Appointments: ";
            }
-        //    setcookie("firstname", $username, time() + 60*5);
+           setcookie("firstname", $username);
         }else{
             echo"Login failed";
         }
