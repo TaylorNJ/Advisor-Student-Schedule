@@ -8,6 +8,7 @@
 </head>
 <style>
     .header{
+        text-align: center;
         /* display: flex;
         justify-content: center;
         align-items: center;
@@ -48,11 +49,48 @@
                     echo "<center><h1>Welcome ", $row['first_name']," ", $row['last_name'],"</h1>";
                     echo"<br><a href='schedule_advisor.php?userId=$aid'>Create Schedule</a>";
                     echo"<br><a href='view_schedule.php?userId=$aid'>View Schedule</a>";
+                    echo"<br><a href='logout.php'>Logout</a>";
                     echo"<br><br>Upcoming Appointments: ";
                     echo"</center>" ;
                 }
             }
-        }else{
+            $query= "SELECT appt_day, time_from, time_to, student.first_name, student.last_name FROM appointments INNER JOIN student ON appointments.student_id = student.student_id WHERE advisor_id=$aid;";
+            $result = mysqli_query($conn, $query);
+            echo"<center><br>Your Upcoming Appointments: <br>";
+            if (mysqli_num_rows($result) > 0){
+                while($row = mysqli_fetch_assoc($result)) {
+                    echo"<li>", "<b>",$row['appt_day'],"</b>: ", "<b>",$row['time_from'],"</b> to <b>", $row['time_to'],"</b> with ", $row['first_name']," ", $row['last_name'],"</li>"; 
+                }
+            }
+            echo"</center>";
+
+
+        }
+        if( isset($_COOKIE["studentId"]) ){
+            $sid= $_COOKIE['studentId'];
+            $conn = mysqli_connect("localhost", "natalia", "root", "advisor_student") or die("Connection failed: " . mysqli_connect_error());
+            $query = "SELECT first_name, last_name FROM student WHERE student_id=$sid;";
+            $result = mysqli_query($conn, $query);
+            if (mysqli_num_rows($result) > 0){
+                while($row = mysqli_fetch_assoc($result)) {
+                    echo "<center><h1>Welcome ", $row['first_name']," ", $row['last_name'],"</h1>";
+                    echo"<br><a href='view_schedule.php?studentId=$sid'>Make Appointment with Advisor</a>";
+                    echo"<br><a href='logout.php'>Logout</a>";
+                    echo"</center>" ;
+                }
+            }
+            $query= "SELECT appt_day, time_from, time_to, advisor.first_name, advisor.last_name FROM appointments INNER JOIN advisor ON appointments.advisor_id = advisor.advisor_id WHERE student_id=$sid;";
+            $result = mysqli_query($conn, $query);
+            echo"<center><br>Your Upcoming Appointments: <br>";
+            if (mysqli_num_rows($result) > 0){
+                while($row = mysqli_fetch_assoc($result)) {
+                    echo"<li>", "<b>",$row['appt_day'],"</b>: ", "<b>",$row['time_from'],"</b> to <b>", $row['time_to'],"</b> with ", $row['first_name']," ", $row['last_name'],"</li>"; 
+                }
+            }
+            echo"</center>";
+        }
+        
+        else{
             echo"<form action='index.php'>
                 <p><a href='advisor_login.html' class='link'>Login as Faculty</a></p>
                 <p><a href='student_login.html' class='link'>Login as Student</a></p>

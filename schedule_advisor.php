@@ -113,7 +113,7 @@
                 $start = $startTime;
                 $end = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
                 $startTime = date('H:i',strtotime('+'.$interval.' minutes',strtotime($startTime)));
-                $cstart = new DateTime($startTime);
+                $cstart = new DateTime($start);
                 $convertstart = $cstart->format('h:i');
                 $cend = new DateTime($end);
                 $convertend = $cend->format('h:i');
